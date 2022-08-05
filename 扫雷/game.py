@@ -1,8 +1,3 @@
-"""
-todo: 1. 数字颜色
-      2. 遮盖
-"""
-
 from random import sample, randint
 
 from cocos.director import director
@@ -10,6 +5,11 @@ from cocos.scene import Scene
 from cocos.layer import Layer, ColorLayer
 from cocos.draw import Line
 from cocos.text import Label
+from cocos.actions import Blink
+
+from settings import Settings
+from grid_objs import Mine, Flag
+from position import Pos
 
 
 class GameScene(Scene):
@@ -20,74 +20,150 @@ class GameScene(Scene):
         self.add(GameLayer(), z=1)
 
 
-class _GameConfigure(object):
-    GRID_SIZE = 40
-
-    def __init__(self):
-        self.rows = 8
-        self.columns = 8
-
-        self.origin = (int(director.get_window_size()[0] / 2 - self.columns / 2 * _GameConfigure.GRID_SIZE),
-                       int(director.get_window_size()[1] / 2 - self.rows / 2 * _GameConfigure.GRID_SIZE))
-
-
 class GameLayer(Layer):
-    masks: dict
+    up_masks: dict
+    down_masks: dict
+    grids: dict
+    is_first_click: bool
 
     is_event_handler = True
 
     def __init__(self):
         super().__init__()
 
-        # 棋盘基本信息
-        self.config = _GameConfigure()
         # 绘制棋盘
-        self.grids = {Pos((x, y), self.config): None
-                      for x in range(self.config.columns)
-                      for y in range(self.config.rows)}
         self.draw_grids()
-        # 布置雷(mine)
-        self.place_mines(num=10)
-        # 设置数字
-        self.set_nums()
+        # 设置flag信息
+        self.flags = {Pos((x, y)): None
+                      for x in range(Settings.COLUMNS)
+                      for y in range(Settings.ROWS)}
+
+        self.grids = {Pos((x, y)): None
+                      for x in range(Settings.COLUMNS)
+                      for y in range(Settings.ROWS)}
+        self.is_first_click = True
         # 设置遮盖
         self.set_masks()
 
     def on_mouse_press(self, x, y, button, _):
-        pos = Pos.position_to_pos(x, y, self.config)
-        if button == 1:  # 点击左键
-            if pos in self.masks:
-                if isinstance(self.masks[pos], ColorLayer):
-                    self.remove(self.masks[pos])
-                    self.masks[pos] = -1
-                    if self.grids[pos] is Mine:
-                        print("Game Over")
+        pos = Pos.position_to_pos(x, y)
+        if pos in self.grids:
+            if button == 1:  # 点击左键
+                if pos in self.up_masks and self.up_masks[pos] is not None:  # 点到棋盘内未点击区
+                    if self.is_first_click:
+                        # 布置雷(mine)
+                        self.place_mines(Settings.MINE_NUMS, pos)
+                        # 设置数字
+                        self.set_nums()
+                        self.recursively_expand(pos)
+                    elif isinstance(self.up_masks[pos], ColorLayer):
+                        if self.grids[pos] is Mine:
+                            self.show_all_mines()
+                        elif self.grids[pos] is None:
+                            self.recursively_expand(pos)
+                        self.remove_mask(pos)
+                elif pos.get_mask_nearby(self.up_masks):
+                    if self.grids[pos]:
+                        if pos.count_flags(self.flags) >= self.grids[pos]:
+                            pos.auto_remove(self.flags, self)
+                        else:
+                            self.grid_blink(pos)
+
+            elif button == 4:  # 点击右键
+                if self.up_masks[pos] is not None:  # 只能在未点击的地方点
+                    if self.flags[pos] is None:
+                        flag = Flag(pos)
+                        self.add(flag, z=100)
+                        self.flags[pos] = flag
+                    else:
+                        self.remove(self.flags[pos])
+                        self.flags[pos] = None
+
+    def clear(self):
+        for _, child in self.children:
+            if isinstance(child, (Mine, ColorLayer, Label)) and not isinstance(child, Flag):
+                self.remove(child)
+
+    def show_all_mines(self):
+        for pos in self.grids:
+            if self.grids[pos] is Mine:
+                self.remove_mask(pos)
+        director.window.remove_handlers(self)
+
+    def grid_blink(self, pos):
+        poses = pos.get_mask_nearby(self.up_masks)
+        for pos_ in poses:
+            self.up_masks[pos_].do(Blink(1, 0.15))
+
+    def recursively_expand(self, pos):
+        if pos.check_valid(*pos.pos) and self.up_masks[pos] is not None and self.flags[pos] is None:
+            self.remove_mask(pos)
+            if isinstance(self.grids[pos], int):
+                return
+            self.recursively_expand(pos.up_pos)
+            self.recursively_expand(pos.down_pos)
+            self.recursively_expand(pos.left_pos)
+            self.recursively_expand(pos.right_pos)
+
+    def remove_mask(self, pos):
+        if self.up_masks[pos]:
+            self.remove(self.up_masks[pos])
+            self.up_masks[pos] = None
+        if self.down_masks[pos]:
+            self.remove(self.down_masks[pos])
+            self.down_masks[pos] = None
+        if self.flags[pos]:
+            self.remove(self.flags[pos])
+            self.flags[pos] = None
 
     def set_masks(self):
-        self.masks = {Pos((x, y), self.config): None
-                      for x in range(self.config.columns)
-                      for y in range(self.config.rows)}
-        for x in range(self.config.columns):
-            for y in range(self.config.rows):
-                mask = ColorLayer(127, 127, 127, 255, width=self.config.GRID_SIZE - 1, height=self.config.GRID_SIZE - 1)
-                mask.position = Pos((x, y), self.config).pos_to_position()
-                self.add(mask)
-                self.masks[(x, y)] = mask
+        self.up_masks = {Pos((x, y)): None
+                         for x in range(Settings.COLUMNS)
+                         for y in range(Settings.ROWS)}
+        self.down_masks = {Pos((x, y)): None
+                           for x in range(Settings.COLUMNS)
+                           for y in range(Settings.ROWS)}
+        for x in range(Settings.COLUMNS):
+            for y in range(Settings.ROWS):
+                up_mask = ColorLayer(127, 127, 127, 255, width=Settings.GRID_SIZE - 1,
+                                     height=Settings.GRID_SIZE - 1)
+                up_mask.position = Pos((x, y)).pos_to_position()
+                self.add(up_mask, z=10)
+                self.up_masks[(x, y)] = up_mask
+
+                down_mask = ColorLayer(255, 255, 255, 255, width=Settings.GRID_SIZE - 1,
+                                       height=Settings.GRID_SIZE - 1)
+                down_mask.position = Pos((x, y)).pos_to_position()
+                self.add(down_mask, z=5)
+                self.down_masks[(x, y)] = down_mask
 
     def draw_grids(self):
-        for x in range(self.config.columns + 1):
-            self.add(Line(start=(self.config.origin[0] + x * self.config.GRID_SIZE, self.config.origin[1]),
-                          end=(self.config.origin[0] + x * self.config.GRID_SIZE,
-                               self.config.origin[1] + self.config.rows * self.config.GRID_SIZE),
+        for x in range(Settings.COLUMNS + 1):
+            self.add(Line(start=(Settings.ORIGIN[0] + x * Settings.GRID_SIZE, Settings.ORIGIN[1]),
+                          end=(Settings.ORIGIN[0] + x * Settings.GRID_SIZE,
+                               Settings.ORIGIN[1] + Settings.ROWS * Settings.GRID_SIZE),
                           color=(0, 0, 0, 255)))
-        for y in range(self.config.rows + 1):
-            self.add(Line(start=(self.config.origin[0], self.config.origin[1] + y * self.config.GRID_SIZE),
-                          end=(self.config.origin[0] + self.config.columns * self.config.GRID_SIZE,
-                               self.config.origin[1] + y * self.config.GRID_SIZE),
+        for y in range(Settings.ROWS + 1):
+            self.add(Line(start=(Settings.ORIGIN[0], Settings.ORIGIN[1] + y * Settings.GRID_SIZE),
+                          end=(Settings.ORIGIN[0] + Settings.COLUMNS * Settings.GRID_SIZE,
+                               Settings.ORIGIN[1] + y * Settings.GRID_SIZE),
                           color=(0, 0, 0, 255)))
 
-    def place_mines(self, num=10):
+    def place_mines(self, num, pos_):
         mine_poses = sample(list(self.grids), num)
+
+        def check_mines_around():
+            for position in mine_poses:
+                for i in [-1, 0, 1]:
+                    for j in [-1, 0, 1]:
+                        pos = pos_.x + i, pos_.y + j
+                        if pos == position.pos:
+                            return True
+            return False
+
+        while check_mines_around():
+            mine_poses = sample(list(self.grids), num)
+        self.is_first_click = False
 
         for pos in mine_poses:
             self.grids[pos] = Mine
@@ -99,6 +175,7 @@ class GameLayer(Layer):
                 mines = pos.search_mines(self.grids)
                 if mines:
                     self.create_label(pos, mines)
+                    self.grids[pos] = mines
 
     def create_label(self, pos, num):
         color = [(0, 0, 255, 255),
@@ -112,70 +189,9 @@ class GameLayer(Layer):
         label = Label(
             text=f"{num}",
             position=pos.pos_to_mid_position(),
-            font_size=30,
+            font_size=Settings.GRID_SIZE - 5,
             color=chosen_color,
             anchor_x="center",
             anchor_y="center"
         )
         self.add(label)
-
-
-class Pos(object):
-    def __init__(self, pos, config):
-        self.pos = pos
-        self.config = config
-
-    @property
-    def x(self):
-        return self.pos[0]
-
-    @property
-    def y(self):
-        return self.pos[1]
-
-    def pos_to_position(self):
-        return self.pos[0] * self.config.GRID_SIZE + self.config.origin[0], \
-               self.pos[1] * self.config.GRID_SIZE + self.config.origin[1]
-
-    def pos_to_mid_position(self):
-        return (self.pos[0] + 0.5) * self.config.GRID_SIZE + self.config.origin[0], \
-               (self.pos[1] + 0.5) * self.config.GRID_SIZE + self.config.origin[1]
-
-    @staticmethod
-    def position_to_pos(x, y, config):
-        return (x - config.origin[0]) // config.GRID_SIZE, (y - config.origin[1]) // config.GRID_SIZE
-
-    def __hash__(self):
-        return hash(self.pos)
-
-    def __eq__(self, other):
-        if isinstance(other, tuple):
-            if self.pos == other:
-                return True
-        if isinstance(other, Pos):
-            if self.pos == other.pos:
-                return True
-        return False
-
-    def search_mines(self, grids):
-        mines_count = 0
-        for i in [-1, 0, 1]:
-            for j in [-1, 0, 1]:
-                if self.check_valid(self.x + i, self.y + j) and not (self.x + i, self.y + j) == self.pos:
-                    if grids[(self.x + i, self.y + j)] is Mine:
-                        mines_count += 1
-        return mines_count
-
-    def check_valid(self, x, y):
-        if x < 0 or x >= self.config.rows or y < 0 or y >= self.config.columns:
-            return False
-        return True
-
-
-class Mine(ColorLayer):
-    def __init__(self, pos: Pos):
-        super().__init__(255, 0, 0, 255)
-
-        self.position = pos.pos_to_position()
-        self.width = pos.config.GRID_SIZE - 1
-        self.height = pos.config.GRID_SIZE - 1
