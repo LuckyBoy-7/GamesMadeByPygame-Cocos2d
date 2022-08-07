@@ -1,12 +1,15 @@
-class Settings(object):
-    GRID_SIZE = 40
-    MINE_NUMS = 15
+from collections import namedtuple
 
-    ROWS = 10
-    COLUMNS = 10
+
+class Settings(object):
+    grid_size = 40
+    mine_nums = 10
+    rows = 9
+    columns = 9
 
     WIDTH = 1000
     HEIGHT = 800
+    WINDOW_SIZE = WIDTH, HEIGHT
 
-    ORIGIN = (int(WIDTH / 2 - COLUMNS / 2 * GRID_SIZE),
-              int(HEIGHT / 2 - ROWS / 2 * GRID_SIZE))
+    origin = namedtuple("ORIGIN", "x y")(int(WIDTH / 2 - columns / 2 * grid_size),
+                                         int(HEIGHT / 2 - rows / 2 * grid_size))
