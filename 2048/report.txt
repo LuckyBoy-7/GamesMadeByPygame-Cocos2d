@@ -1,0 +1,11 @@
+version 1: 只做了一个方向的判断, 且有bug(忘记更新grid.pos了, 老半天看不出来), 局限于官方的背景, 控制不够弹性
+version 2: 实现基本玩法, 但缺少分数之类的交互, 未进行结束等判断, 稍有细节
+version 3: 大体框架完成, 细节完成(restart, score_hint等), 代码有一定优化?
+version 4: 新增1/2grid, 修复少许bug, 代码进行了重构(内心os: 再也不乱用exec了, 我吐了),
+           注意标识符对应的class是否改变(我吐了, 1/2grid [move_to] bug),部分解耦
+version 5: 增加万能方块(UniversalGrid, 也就是*2), 阻塞方块(BlockGrid), 炸弹方块(BoomGrid, 去除3*3格子里的gird),
+           优化部分代码, 修复del_grid淡出bug, 用grid_id统一管理各个grid对应的颜色等
+           加注释? 以后再说吧
+
+
+
