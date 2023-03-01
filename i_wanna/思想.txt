@@ -1,0 +1,14 @@
+# 实现二段跳
+        self.double_lst.append(self.key[key.LSHIFT])
+        if self.key[key.LSHIFT] and self.may_jump:
+            # print(self.double_lst)
+            if len(self.double_lst) == 1:
+                self.jump_control(vy)
+            elif 0 in self.double_lst \
+                    and 1 in self.double_lst[str(self.double_lst).find("0"):]:
+                vy = self.JUMP_SPEED
+                self.may_jump = False
+
+        if not self.key[key.LSHIFT] and self.on_ground:
+            self.may_jump = True
+            self.double_lst = []

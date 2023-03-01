@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="74">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="3" columns="3">
+  <image source="block.png" width="96" height="32"/>
+ </tileset>
+ <layer id="1" name="background" width="25" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjZmBgYB7Fo3gUj+JRPIpH8ZDGAPgyBd0=
+  </data>
+ </layer>
+ <layer id="2" name="obstacle" width="25" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzFlVkOwCAIRMH7H7q/hM6UpRAnIWKIPMVNRUQv2B9t5s7ybzKOaTvGGEfe+qopiynxmbqMA/wMA9WBMdT4kfy6/RynGD6nun7EiM4FGhvNLXv3ENcyovNavXuVmnQZVWXWOsVAluWhONu3LM/nRPGJ/8W+kZv/2Hb+qj0chAE6
+  </data>
+ </layer>
+ <objectgroup id="3" name="objects">
+  <object id="6" x="622.333" y="47.5718">
+   <properties>
+    <property name="index" value="4"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="8" x="591.918" y="46.792">
+   <properties>
+    <property name="index" value="3"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="9" x="562.283" y="49.9114">
+   <properties>
+    <property name="index" value="2"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="11" x="495.995" y="114.64">
+   <properties>
+    <property name="index" value="6"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="12" x="460.121" y="113.081">
+   <properties>
+    <property name="index" value="5"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="13" x="751.791" y="173.13">
+   <properties>
+    <property name="index" value="13"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="14" x="720.596" y="173.91">
+   <properties>
+    <property name="index" value="12"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="15" x="687.062" y="173.13">
+   <properties>
+    <property name="index" value="11"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="16" x="652.748" y="172.35">
+   <properties>
+    <property name="index" value="10"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="21" x="274.513" y="304.148">
+   <properties>
+    <property name="index" value="8"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="23" x="205.105" y="304.148">
+   <properties>
+    <property name="index" value="7"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="24" x="302.588" y="336.122">
+   <properties>
+    <property name="index" value="9"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="25" x="238.639" y="368.097">
+   <properties>
+    <property name="index" value="24"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="27" x="209.784" y="364.197">
+   <properties>
+    <property name="index" value="25"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="left"/>
+   </properties>
+  </object>
+  <object id="29" x="266.714" y="398.512">
+   <properties>
+    <property name="index" value="23"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="left"/>
+   </properties>
+  </object>
+  <object id="30" x="302.588" y="400.071">
+   <properties>
+    <property name="index" value="22"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="32" x="336.902" y="429.706">
+   <properties>
+    <property name="index" value="21"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="left"/>
+   </properties>
+  </object>
+  <object id="33" x="371.216" y="427.367">
+   <properties>
+    <property name="index" value="20"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="34" x="559.164" y="398.512">
+   <properties>
+    <property name="index" value="16"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="left"/>
+   </properties>
+  </object>
+  <object id="37" x="623.893" y="430.486">
+   <properties>
+    <property name="index" value="15"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="down"/>
+   </properties>
+  </object>
+  <object id="38" x="655.867" y="398.512">
+   <properties>
+    <property name="index" value="14"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="40" x="557.604" y="495.215">
+   <properties>
+    <property name="index" value="17"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="41" x="435.945" y="530.309">
+   <properties>
+    <property name="index" value="19"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="42" x="493.655" y="494.435">
+   <properties>
+    <property name="index" value="18"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="left"/>
+   </properties>
+  </object>
+  <object id="43" x="205.885" y="466.36">
+   <properties>
+    <property name="index" value="26"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="up"/>
+   </properties>
+  </object>
+  <object id="44" x="104.432" y="102.385" width="16.4067" height="14.8238">
+   <properties>
+    <property name="index" value="1"/>
+    <property name="label" value="spike"/>
+    <property name="orientation" value="right"/>
+   </properties>
+  </object>
+  <object id="46" x="110.741" y="432.046">
+   <properties>
+    <property name="label" value="spawn"/>
+   </properties>
+  </object>
+  <object id="47" x="16.1571" y="206.664">
+   <properties>
+    <property name="label" value="start"/>
+   </properties>
+  </object>
+  <object id="65" x="209" y="435">
+   <properties>
+    <property name="index" value="1"/>
+    <property name="label" value="trap"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="67" x="434" y="496">
+   <properties>
+    <property name="index" value="2"/>
+    <property name="label" value="trap"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="68" x="432" y="327">
+   <properties>
+    <property name="index" value="4"/>
+    <property name="label" value="trap"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="69" x="273" y="107">
+   <properties>
+    <property name="index" value="5"/>
+    <property name="label" value="trap"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="70" x="750" y="470">
+   <properties>
+    <property name="index" value="3"/>
+    <property name="label" value="trap"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>
